@@ -90,3 +90,4 @@ def test_multiclass():
 
     pproba = clf.predict_proba(["affirmitive", "negative", "possibly", "uncertain"])
     assert pproba.shape == (n_preds, n_labels)
+
