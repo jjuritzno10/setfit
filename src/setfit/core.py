@@ -80,7 +80,18 @@ class SetFitClassifier(BaseEstimator, ClassifierMixin):
         np.random.seed(random_state)
         torch.manual_seed(random_state)
         self.random_state = random_state
-        self.model = SentenceTransformer(model)
+
+        # Set device if available
+       if torch.cuda.is_available():
+           device = torch.device('cuda')
+       elif torch.backends.mps.is_available():
+           device = torch.device('mps')
+       else:
+           device = torch.device('cpu')
+
+       print(f"Using device: {device}")
+
+       self.model = SentenceTransformer(model).to(device)
         if classifier_head is None:
             self.classifier_head = LogisticRegression()
         else:
