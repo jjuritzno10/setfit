@@ -72,6 +72,7 @@ class SetFitClassifier(BaseEstimator, ClassifierMixin):
     def __init__(
         self,
         model: str,
+        device = None,
         classifier_head: Optional[Any] = None,
         loss=losses.CosineSimilarityLoss,
         random_state: int = 1234,
@@ -80,18 +81,20 @@ class SetFitClassifier(BaseEstimator, ClassifierMixin):
         np.random.seed(random_state)
         torch.manual_seed(random_state)
         self.random_state = random_state
+        
+        if device is None:
+            # Set device if available
+            if torch.cuda.is_available():
+                device = torch.device('cuda')
+            elif torch.backends.mps.is_available():
+                device = torch.device('mps')
+            else:
+                device = torch.device('cpu')
+        
 
-        # Set device if available
-        if torch.cuda.is_available():
-            device = torch.device('cuda')
-        elif torch.backends.mps.is_available():
-            device = torch.device('mps')
-        else:
-            device = torch.device('cpu')
+        print(f"Using device: {device}")
 
-       print(f"Using device: {device}")
-
-       self.model = SentenceTransformer(model).to(device)
+        self.model = SentenceTransformer(model).to(device)
         if classifier_head is None:
             self.classifier_head = LogisticRegression()
         else:
