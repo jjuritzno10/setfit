@@ -91,16 +91,16 @@ class SetFitClassifier(BaseEstimator, ClassifierMixin):
                 device = torch.device('mps')
             else:
                 device = torch.device('cpu')
-
-        # MPS is not currently supported on generator api, so use cpu instead
-        generator_device = device
-        if generator_device == torch.device('mps'):
-            generator_device = torch.device('cpu')
         
+        self.device = device
+        self.generator_device = device
+        # MPS is not currently supported on generator api, so use cpu instead
+        if self.generator_device == torch.device('mps'):
+            self.generator_device = torch.device('cpu')
 
-        print(f"Using device: {device}")
+        print(f"Using device: {self.device}")
 
-        self.model = SentenceTransformer(model).to(device)
+        self.model = SentenceTransformer(model).to(self.device)
 
         if classifier_head is None:
             self.classifier_head = LogisticRegression()
@@ -125,7 +125,7 @@ class SetFitClassifier(BaseEstimator, ClassifierMixin):
             train_examples,
             shuffle=True,
             batch_size=batch_size,
-            generator=torch.Generator(device=generator_device),
+            generator=torch.Generator(device=self.generator_device),
         )
         self.model.fit(
             train_objectives=[(train_dataloader, self.loss)],
