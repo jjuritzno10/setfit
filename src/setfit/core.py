@@ -94,7 +94,7 @@ class SetFitClassifier(BaseEstimator, ClassifierMixin):
 
         # MPS is not currently supported on generator api, so use cpu instead
         generator_device = device
-        if generator_device = torch.device('mps'):
+        if generator_device == torch.device('mps'):
             generator_device = torch.device('cpu')
         
 
@@ -106,7 +106,7 @@ class SetFitClassifier(BaseEstimator, ClassifierMixin):
             self.classifier_head = LogisticRegression()
         else:
             self.classifier_head = classifier_head()
-            
+
         self.loss = loss(self.model)
         self.fitted = False
 
