@@ -2,6 +2,8 @@
 
 A scikit-learn API version of a SetFit classifier. Model originally developed by [Moshe Wasserblat](https://twitter.com/MosheWasserblat).
 
+This fork enables setfit to run on MPS devices through scikit-learn.
+
 ## Use
 
 ```python
